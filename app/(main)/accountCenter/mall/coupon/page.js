@@ -36,54 +36,66 @@ export default function CouponPage() {
       setLoading(true);
       setError(null);
 
-      // 從 AuthContext 或其他地方獲取 token
-      const token = localStorage.getItem("token"); // 假設 token 存在 localStorage 中
+      // 從 AuthContext 獲取 token，而不是 localStorage
+      const token = user?.token || localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("請重新登入");
+      }
+
+      console.log("發送請求到 API...", { userId, hasToken: !!token });
 
       const response = await fetch(`/api/user-discounts`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // 加入 Authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
 
+      console.log("API 回應狀態:", response.status);
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API 錯誤回應:", errorText);
+
         if (response.status === 401) {
           throw new Error("請重新登入");
         }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`請求失敗: ${response.status} - ${errorText}`);
       }
 
       const result = await response.json();
+      console.log("API 回應資料:", result);
 
-      // 根據你的 API 回應格式：{ success: true, data: [...] }
       if (result.success && Array.isArray(result.data)) {
-        // 將後端資料格式轉換為前端需要的格式
         const formattedCoupons = result.data.map((item) => ({
-          code: `#DISC${item.id}`, // 生成優惠券代碼
+          code: `#DISC${item.id}`,
           value:
             item.discount_type === "percentage"
               ? `${item.discount_value}%`
-              : `${item.discount_value}`,
-          expiry: new Date().toISOString().split("T")[0], // 需要從 user_discounts 表獲取 expires_at
-          status: "尚未使用", // 因為查詢已經篩選 is_used = 0
+              : `$${item.discount_value}`, // 這裡加上 $ 符號
+          expiry: item.expires_at
+            ? new Date(item.expires_at).toISOString().split("T")[0]
+            : new Date().toISOString().split("T")[0],
+          status: "尚未使用",
           note: item.name,
         }));
+
+        console.log("格式化後的優惠券:", formattedCoupons);
         setCoupons(formattedCoupons);
       } else {
-        // 如果 API 回傳格式不符預期或沒有資料
+        console.log("沒有優惠券資料或格式不正確");
         setCoupons([]);
       }
     } catch (error) {
       console.error("獲取優惠券資料失敗:", error);
       setError(error.message);
-      // 發生錯誤時不顯示預設資料，而是顯示空陣列
       setCoupons([]);
     } finally {
       setLoading(false);
     }
   };
-
   // 當用戶資料載入完成後，獲取優惠券資料
   useEffect(() => {
     if (!isLoading && user?.id) {

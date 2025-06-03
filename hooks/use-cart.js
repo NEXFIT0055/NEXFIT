@@ -128,7 +128,7 @@ function CartProviderCore({ children }) {
 
       debugLog("發送 API 請求到購物車端點");
 
-      const res = await fetch("http://localhost:3000/api/cart", {
+      const res = await fetch("/api/cart", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

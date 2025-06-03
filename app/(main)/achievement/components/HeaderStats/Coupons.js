@@ -34,7 +34,7 @@ export default function Coupons({ score, coupons }) {
         <p className="text-sm font-medium">當前積分：<span className="text-pink-500 font-bold">{score}</span></p>
       </div>
       <a
-        href="http://localhost:3000/accountCenter/mall/coupon" // 替換為實際商城連結
+        href="/accountCenter/mall/coupon" // 替換為實際商城連結
         target="_blank"
         rel="noopener noreferrer"
         className="text-lg font-bold text-green-600 hover:text-green-800 mt-4"

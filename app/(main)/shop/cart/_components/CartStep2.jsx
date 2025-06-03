@@ -53,9 +53,13 @@ export default function CartStep2() {
   // useShip711StoreOpener的第一個傳入參數是"伺服器7-11運送商店用Callback路由網址"
   // 指的是node(express)的對應api路由。詳情請見說明文件:
   const { store711, openWindow, closeWindow } = useShip711StoreOpener(
-    `http://localhost:3000/shop/checkout/api`, // 直接用Next提供的api路由
-    //`${apiUrl}/shipment/711`, // 也可以用express伺服器的api路由
-    { autoCloseMins: 3 } // x分鐘沒完成選擇會自動關閉，預設5分鐘。
+    process.env.NODE_ENV === "production"
+      ? `${
+          process.env.VERCEL_URL ||
+          "https://nexfit-2vpb-dmv6wg9gm-nexfit0055s-projects.vercel.app"
+        }/shop/checkout/api`
+      : `http://localhost:3000/shop/checkout/api`,
+    { autoCloseMins: 3 }
   );
 
   const [storeInfo, setStoreInfo] = useState({
@@ -213,7 +217,7 @@ export default function CartStep2() {
         }
       }
 
-      const response = await fetch("http://localhost:3000/api/orders", {
+      const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -37,7 +37,7 @@ function OrderDetailWithParams() {
     async function fetchOrderDetail() {
       try {
         setIsLoading(true);
-        const res = await fetch(`http://localhost:3000/api/orders/${orderId}`);
+        const res = await fetch(`/api/orders/${orderId}`);
 
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);

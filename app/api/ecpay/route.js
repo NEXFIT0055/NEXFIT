@@ -15,12 +15,17 @@ export async function GET(req) {
   const HashKey = "pwFHCqoQZGmho4w6";
   const HashIV = "EkRm7iFT261dpevs";
   let isStage = true;
-
+  const ClientBackURL =
+    process.env.NODE_ENV === "production"
+      ? `${
+          process.env.VERCEL_URL ||
+          "https://nexfit-2vpb-dmv6wg9gm-nexfit0055s-projects.vercel.app"
+        }/shop/checkout/success`
+      : "http://localhost:3000/shop/checkout/success";
   const TotalAmount = amount;
   const TradeDesc = "商店線上付款";
   const ItemName = itemName;
   const ReturnURL = "https://www.ecpay.com.tw";
-  const ClientBackURL = "http://localhost:3000/shop/checkout/success";
   const ChoosePayment = "ALL";
 
   const stage = isStage ? "-stage" : "";

@@ -9,7 +9,7 @@ import OrderSkeleton from "./_components/OrderSkeleton";
 export default function OrderPage() {
   const [orderList, setOrderList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  
   // 讀取訂單資料
   useEffect(() => {
     async function fetchOrder() {
@@ -19,7 +19,7 @@ export default function OrderPage() {
       try {
         setIsLoading(true);
 
-        const res = await fetch("http://localhost:3000/api/orders/user", {
+        const res = await fetch("/api/orders/user", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

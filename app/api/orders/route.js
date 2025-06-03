@@ -186,8 +186,8 @@ export async function POST(request) {
 
     const paymentUrl =
       payment_method === "ecpay"
-        ? `http://localhost:3000/api/ecpay?amount=${final_total}`
-        : "http://localhost:3000/shop/checkout/success";
+        ? `/api/ecpay?amount=${final_total}`
+        : "/shop/checkout/success";
 
     return NextResponse.json({
       success: true,
