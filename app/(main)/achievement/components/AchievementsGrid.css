@@ -1,0 +1,28 @@
+.card-container {
+  perspective: 1000px;
+}
+
+.card {
+  width: 100%;
+  height: 90px; /* 卡片高度調小，例如從原本 180px 改成 120px */
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+}
+
+.card-container.flipped .card {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}

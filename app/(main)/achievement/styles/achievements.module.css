@@ -1,0 +1,74 @@
+/* styles/achievements.module.css */
+
+.headerStatsContainer {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr 250px;
+    gap: 1rem;
+    padding: 2rem;
+    background-color: #fdfdfd;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .avatarSection {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .avatarCircle {
+    width: 150px;
+    height: 150px;
+    background-color: #d4d4d4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .userInfoSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .username, .level {
+    background-color: #e5e5e5;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  
+  .bio {
+    height: 80px;
+    resize: vertical;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+  }
+  
+  .badgesSection {
+    display: grid;
+    grid-template-columns: repeat(2, 80px);
+    grid-template-rows: repeat(2, 80px);
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  .badge {
+    background-color: #d4d4d4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .couponSection {
+    background-color: #d4d4d4;
+    padding: 1rem;
+    height: 200px;
+    border-radius: 12px;
+  }
+  

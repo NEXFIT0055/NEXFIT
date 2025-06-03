@@ -1,0 +1,52 @@
+@keyframes slideInUp {
+  0% {
+    transform: translateY(150%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceSlow {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes slowRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+
+}
+
+.slowRotate {
+  animation: slowRotate 30s linear infinite;
+}
+
+
+
+.slideInUp {
+  animation: slideInUp 1.2s ease-out forwards;
+}
+
+.bounceSlow {
+  animation: bounceSlow 4s ease-in-out infinite;
+}

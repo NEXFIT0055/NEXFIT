@@ -1,0 +1,146 @@
+.jump-rope-container {
+  width: 100%;
+  height: 100%;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: #0f172a;
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('/images/jumprope-bg.jpg') center/cover no-repeat;
+  opacity: 0.2;
+  z-index: 0;
+}
+
+.start-button {
+  margin: 10px;
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.progress-bar {
+  position: relative;
+  width: 80%;
+  height: 10px;
+  background: #ddd;
+  border-radius: 5px;
+  margin: 20px auto;
+}
+.progress {
+  height: 100%;
+  background: #4caf50;
+  border-radius: 5px;
+}
+
+/* Rope 動畫 */
+.svg-rope {
+  position: absolute;
+  top: calc(50% - 160px);
+  left: calc(50% - 50px);
+  width: 200px;
+  height: 50px;
+  z-index: 2;
+  opacity: 0.8;
+  pointer-events: none;
+  transform-origin: center bottom;
+}
+.svg-rope.animate {
+  animation: swing-rope 0.3s ease-in-out;
+}
+@keyframes swing-rope {
+  0% { transform: rotate(0deg); opacity: 1; }
+  50% { transform: rotate(15deg); opacity: 0.8; }
+  100% { transform: rotate(0deg); opacity: 1; }
+}
+
+/* 角色跳躍動畫 */
+.character {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.2s;
+}
+.character.jump {
+  transform: translateY(-40px);
+}
+
+/* 點擊波紋 */
+.ripple-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.ripple {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 600ms linear;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* 星星背景 */
+.stars-layer {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+.twinkling-star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0.3;
+  animation: blink 5s infinite ease-in-out;
+}
+@keyframes blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}
+
+/* UI 資訊列 */
+.top-bar {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.twinkling-star.paused {
+  animation-play-state: paused;
+}

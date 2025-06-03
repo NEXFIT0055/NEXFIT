@@ -1,0 +1,16 @@
+/* app/components/Achievements.css */
+.shine-effect {
+  background: linear-gradient(120deg, transparent 25%, rgba(255,255,255,0.6) 50%, transparent 75%);
+  transform: translateX(-100%) rotate(25deg);
+  animation: shine 2s ease-in-out infinite; /* 持續閃爍 */
+  opacity: 1; /* 一直閃爍 */
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(200%) rotate(25deg);
+  }
+}
