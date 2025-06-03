@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Navbar from "./components/Navbar_index";
-import Footer from "@/app/components/Footer_index";
-import LoginModal from "./components/login";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import {
   FaTree,
   FaDumbbell,
@@ -34,6 +32,21 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import React from "react";
+
+// 動態載入需要 Firebase 的組件，避免 SSR 錯誤
+const Navbar = dynamic(() => import("./components/Navbar_index"), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white"></div>,
+});
+
+const Footer = dynamic(() => import("@/app/components/Footer_index"), {
+  ssr: false,
+  loading: () => <div className="h-20 bg-gray-100"></div>,
+});
+
+const LoginModal = dynamic(() => import("./components/login"), {
+  ssr: false,
+});
 
 const products = [
   {
@@ -556,10 +569,12 @@ const courseList = [
   { title: "全身循環運動課程", teacher: "Peggy" },
   { title: "肌肉放鬆與筋膜釋放", teacher: "Howard" },
 ];
+
 function getDeterministicTime(idx) {
   const times = ["10:00", "14:00", "16:00", "18:00", "19:00", "20:00"];
   return times[idx % times.length];
 }
+
 const scheduledCourses = weekDays.map((day, idx) => {
   const course = courseList[idx % courseList.length];
   return {
@@ -569,6 +584,7 @@ const scheduledCourses = weekDays.map((day, idx) => {
     teacher: course.teacher,
   };
 });
+
 // 月曆資料生成
 function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
@@ -605,6 +621,8 @@ const courseIdMap = {
 };
 
 export default function Home() {
+  // 客戶端檢查
+  const [mounted, setMounted] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -626,28 +644,35 @@ export default function Home() {
   const [calendarYear, setCalendarYear] = useState(today.getFullYear());
   const [quizStarted, setQuizStarted] = useState(true);
 
+  // 客戶端掛載檢查
   useEffect(() => {
-    // Set initial window size
-    setWindowSize({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
+    setMounted(true);
+  }, []);
 
-    // Add window resize listener
-    const handleResize = () => {
+  useEffect(() => {
+    if (mounted) {
+      // Set initial window size
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
-    };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      // Add window resize listener
+      const handleResize = () => {
+        setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, [mounted]);
 
   // Generate confetti items only when showConfetti changes
   useEffect(() => {
-    if (showConfetti) {
+    if (showConfetti && mounted) {
       const items = Array.from({ length: 50 }, (_, i) => ({
         id: i,
         x: Math.random() * (windowSize.width || 0),
@@ -658,7 +683,7 @@ export default function Home() {
     } else {
       setConfettiItems([]);
     }
-  }, [showConfetti, windowSize.width]);
+  }, [showConfetti, windowSize.width, mounted]);
 
   const scrollLeft = () => {
     if (scrollRef.current)
@@ -764,6 +789,18 @@ export default function Home() {
       teacher: course.teacher,
     };
   });
+
+  // 如果還沒掛載到客戶端，顯示載入畫面
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#E7E7E5]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#7F9161] mx-auto mb-4"></div>
+          <p className="text-xl text-[#7F9161]">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col overflow-hidden scroll-smooth snap-y snap-mandatory bg-[#E7E7E5]">
@@ -985,19 +1022,6 @@ export default function Home() {
                       >
                         NT${product.price}
                       </span>
-                      {/* 星星評等 */}
-                      {/* <div className="flex justify-center mt-2 gap-0.5">
-                        {[...Array(5)].map((_, i) => (
-                          <svg key={i} className="w-5 h-5" viewBox="0 0 20 20">
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.286 3.966c.3.921-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.176 0l-3.388 2.462c-.784.57-1.838-.197-1.539-1.118l1.286-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"
-                              fill={i < product.rating ? "#FFE03C" : "#E0E0E0"}
-                              // stroke="#D4D4D9"
-                              // strokeWidth="1"
-                            />
-                          </svg>
-                        ))}
-                      </div> */}
                     </div>
                   </div>
                 </SwiperSlide>
@@ -1486,6 +1510,7 @@ export default function Home() {
             )}
           </div>
         </motion.section>
+
         {/* GOOGLE 地圖區塊 */}
         <motion.section
           initial={{ opacity: 0, y: 50 }}
@@ -1496,10 +1521,10 @@ export default function Home() {
         >
           {/* 標題 */}
           <div className="flex items-end gap-4 px-16 mb-15">
-            <h2 className="text-5xl font-bold  text-start tracking-wide	">Where to find us</h2>
-            <span className="text-lg font-bold text-[#101828]">
-            與我們相遇
-            </span>
+            <h2 className="text-5xl font-bold  text-start tracking-wide	">
+              Where to find us
+            </h2>
+            <span className="text-lg font-bold text-[#101828]">與我們相遇</span>
           </div>
 
           {/* 地圖與資訊橫向排列 */}
