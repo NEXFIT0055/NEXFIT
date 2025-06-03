@@ -16,7 +16,7 @@ export async function GET(req) {
   const HashIV = "EkRm7iFT261dpevs";
   let isStage = true;
   const ClientBackURL =
-    process.env.NODE_ENV === "production"
+    process.env.NODE_ENV === "development"
       ? `${
           process.env.VERCEL_URL ||
           "https://nexfit-2vpb-dmv6wg9gm-nexfit0055s-projects.vercel.app"

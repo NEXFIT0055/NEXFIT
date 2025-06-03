@@ -53,7 +53,7 @@ export default function CartStep2() {
   // useShip711StoreOpener的第一個傳入參數是"伺服器7-11運送商店用Callback路由網址"
   // 指的是node(express)的對應api路由。詳情請見說明文件:
   const { store711, openWindow, closeWindow } = useShip711StoreOpener(
-    process.env.NODE_ENV === "production"
+    process.env.NODE_ENV === "development"
       ? `${
           process.env.VERCEL_URL ||
           "https://nexfit-2vpb-dmv6wg9gm-nexfit0055s-projects.vercel.app"
