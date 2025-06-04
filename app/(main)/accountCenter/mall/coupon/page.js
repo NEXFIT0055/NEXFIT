@@ -70,11 +70,11 @@ export default function CouponPage() {
 
       if (result.success && Array.isArray(result.data)) {
         const formattedCoupons = result.data.map((item) => ({
-          code: `#DISC${item.id}`,
+          code: `${item.id}`,
           value:
             item.discount_type === "percentage"
               ? `${item.discount_value}%`
-              : `$${item.discount_value}`, // 這裡加上 $ 符號
+              : `${item.discount_value}`,
           expiry: item.expires_at
             ? new Date(item.expires_at).toISOString().split("T")[0]
             : new Date().toISOString().split("T")[0],
