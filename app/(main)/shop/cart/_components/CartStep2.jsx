@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/app/contexts/AuthContext";
 import CartItem from "./CartItem";
@@ -13,6 +14,7 @@ import { toast } from "sonner";
 
 export default function CartStep2() {
   const { user } = useAuth();
+  const router = useRouter();
 
   // 同步會員資料
   const handleSyncMemberData = () => {
@@ -21,7 +23,6 @@ export default function CartStep2() {
       return;
     }
 
-    // 移除手機號碼中的破折號
     const formattedPhone = user.phone?.replace(/-/g, "") || "";
 
     setCartFormData((prev) => ({
@@ -34,35 +35,97 @@ export default function CartStep2() {
     toast.success("已同步會員資料");
   };
 
-  // const [memberData, setMemberData] = useState(null);
-
-  // useEffect(() => {
-  //   if (user) {
-  //     setMemberData(user);
-  //   }
-  // }, [user]);
-
   const { selectedItems, totalAmount, loading, clearSelectedItems } = useCart();
 
   const [userDiscounts, setUserDiscounts] = useState([]);
-  const [selectedDiscount, setSelectedDiscount] = useState(null); // 會設為折扣卷 ID
+  const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [discountValue, setDiscountValue] = useState(0);
+  const [deliveryMethod, setDeliveryMethod] = useState("home_delivery");
 
-  const [deliveryMethod, setDeliveryMethod] = useState("home_delivery"); // 預設宅配
+  //動態判斷 API URL
+  const getApiUrl = () => {
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}/shop/checkout/api`;
+    }
 
-  // useShip711StoreOpener的第一個傳入參數是"伺服器7-11運送商店用Callback路由網址"
-  // 指的是node(express)的對應api路由。詳情請見說明文件:
+    if (process.env.NODE_ENV === "production") {
+      return "https://nexfit-2vpb-dmv6wg9gm-nexfit0055s-projects.vercel.app/shop/checkout/api";
+    }
+
+    return "http://localhost:3000/shop/checkout/api";
+  };
+
   const { store711, openWindow, closeWindow } = useShip711StoreOpener(
-    `https://nexfit-2vpb-dmv6wg9gm-nexfit0055s-projects.vercel.app/shop/checkout/api`, // 直接用Next提供的api路由
-    //`${apiUrl}/shipment/711`, // 也可以用express伺服器的api路由
-    { autoCloseMins: 3 } // x分鐘沒完成選擇會自動關閉，預設5分鐘。
+    getApiUrl(),
+    { autoCloseMins: 3 }
   );
 
+  //新增：門市選擇狀態
+  const [selectedStore, setSelectedStore] = useState(null);
   const [storeInfo, setStoreInfo] = useState({
     store_id: "",
     store_name: "",
     store_address: "",
   });
+
+  //監聽門市選擇變化
+  useEffect(() => {
+    // 監聽 postMessage 事件
+    const handleMessage = (event) => {
+      if (event.data && event.data.type === "7-11-store-selected") {
+        const storeData = event.data.data;
+        console.log("接收到門市選擇:", storeData);
+
+        setSelectedStore(storeData);
+        setStoreInfo({
+          store_id: storeData.storeid,
+          store_name: storeData.storename,
+          store_address: storeData.storeaddress,
+        });
+
+        toast.success("門市選擇成功！");
+      }
+    };
+
+    // 監聽 localStorage 變化
+    const handleStorageChange = () => {
+      try {
+        const storeData = localStorage.getItem("store711");
+        if (storeData) {
+          const parsed = JSON.parse(storeData);
+          if (parsed.storeid && parsed.storename) {
+            setSelectedStore(parsed);
+            setStoreInfo({
+              store_id: parsed.storeid,
+              store_name: parsed.storename,
+              store_address: parsed.storeaddress,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("讀取門市資料失敗:", error);
+      }
+    };
+
+    // 初始檢查現有的門市資料
+    handleStorageChange();
+
+    // 加入事件監聽器
+    window.addEventListener("message", handleMessage);
+    window.addEventListener("storage", handleStorageChange);
+
+    // 每秒檢查一次 localStorage（備用方案）
+    const interval = setInterval(handleStorageChange, 1000);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
+  //使用當前選擇的門市資料
+  const currentStore = selectedStore || store711;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -87,15 +150,15 @@ export default function CartStep2() {
     setCartFormData({ ...cartFormData, [name]: value });
   };
 
-  // 取得該位用戶目前有的優惠卷
+  // 取得優惠券
   useEffect(() => {
     async function fetchUserDiscounts() {
       try {
-        const token = localStorage.getItem("token"); // 從 localStorage 取得 JWT
+        const token = localStorage.getItem("token");
 
         const response = await fetch(`/api/user-discounts`, {
           headers: {
-            Authorization: `Bearer ${token}`, // 附加 JWT
+            Authorization: `Bearer ${token}`,
           },
         });
         const data = await response.json();
@@ -109,27 +172,27 @@ export default function CartStep2() {
       }
     }
 
-    fetchUserDiscounts();
-  }, [cartFormData.user_id]);
+    if (user) {
+      fetchUserDiscounts();
+    }
+  }, [user]);
 
-  // 當選擇優惠券時更新金額
+  // 優惠券選擇
   const handleSelectDiscount = (e) => {
     const discountId = Number(e.target.value);
     setSelectedDiscount(discountId);
 
-    // 根據選中的優惠券 ID 找出對應的金額
     const selected = userDiscounts.find((d) => d.id === discountId);
     if (selected) {
-      // 判斷是否為百分比折扣
       const discountAmount =
-        selected.discount_type === "percent"
+        selected.discount_type === "percentage"
           ? (totalAmount * selected.discount_value) / 100
           : selected.discount_value;
 
-      setDiscountValue(discountAmount); // 更新金額
+      setDiscountValue(discountAmount);
       console.log("選擇的優惠券金額：", discountAmount);
     } else {
-      setDiscountValue(0); // 沒有選擇則設為 0
+      setDiscountValue(0);
     }
   };
 
@@ -145,7 +208,6 @@ export default function CartStep2() {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    // 檢查 token
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -169,6 +231,18 @@ export default function CartStep2() {
       return;
     }
 
+    //地址驗證
+    if (deliveryMethod === "home_delivery" && !cartFormData.shipping_address) {
+      toast.error("請填寫收件地址");
+      return;
+    }
+
+    //超商驗證
+    if (deliveryMethod === "store_pickup" && !currentStore?.storeid) {
+      toast.error("請選擇超商門市");
+      return;
+    }
+
     if (!cartFormData.payment_method) {
       toast.error("請選擇付款方式");
       return;
@@ -178,9 +252,7 @@ export default function CartStep2() {
     try {
       const finalTotal = totalAmount - discountValue + deliveryFee;
 
-      // 組合訂單資料
       const orderData = {
-        // user_id: cartFormData.user_id ?? 1,
         recipient_name: cartFormData.recipient_name ?? "未知",
         recipient_phone: String(cartFormData.recipient_phone ?? "0000"),
         shipping_address: cartFormData.shipping_address || null,
@@ -198,15 +270,12 @@ export default function CartStep2() {
           quantity: item.quantity ?? 1,
           price: parseFloat(item.price) ?? 0,
         })),
-        // store_id: storeInfo.store_id ?? null,
-        // store_name: storeInfo.store_name ?? null,
-        // store_address: storeInfo.store_address ?? null,
-        store_id: store711.storeid ?? null,
-        store_name: store711.storename ?? null,
-        store_address: store711.storeaddress ?? null,
+        store_id: currentStore?.storeid ?? null,
+        store_name: currentStore?.storename ?? null,
+        store_address: currentStore?.storeaddress ?? null,
       };
 
-      // 過濾 undefined 或 null 欄位
+      // 過濾 undefined
       for (let key in orderData) {
         if (orderData[key] === undefined) {
           orderData[key] = null;
@@ -226,43 +295,37 @@ export default function CartStep2() {
 
       if (response.ok) {
         clearSelectedItems();
-
-        // ✅ 清掉 localStorage 中的 store711，避免下次自動帶入
         localStorage.removeItem("store711");
-
         window.location.href = `${result.paymentUrl}`;
       } else {
-        alert(`訂單建立失敗：${result.message}`);
+        toast.error(`訂單建立失敗：${result.message}`);
       }
     } catch (error) {
       console.error("訂單建立失敗：", error);
-      alert(`訂單建立失敗，請稍後再試 ${error.message}`);
+      toast.error(`訂單建立失敗，請稍後再試`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // 修改運送方式的處理函數
+  // 運送方式變更
   const handleDeliveryMethodChange = (e) => {
     const newMethod = e.target.value;
     setDeliveryMethod(newMethod);
 
-    // 清空相關資料
     if (newMethod === "store_pickup") {
-      // 切換到超商取貨時，清空宅配地址
       setCartFormData((prev) => ({
         ...prev,
         shipping_address: "",
       }));
     } else {
-      // 切換到宅配時，清空超商資訊
       setStoreInfo({
         store_id: "",
         store_name: "",
         store_address: "",
       });
-      // 如果有使用 711 選擇器，也清空相關資料
       localStorage.removeItem("store711");
+      setSelectedStore(null);
     }
   };
 
@@ -277,7 +340,7 @@ export default function CartStep2() {
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-16">
-        {/* 確認商品資訊 */}
+        {/* 商品資訊 */}
         <table className="w-full lg:w-2/3 text-center md:text-left border-separate border-spacing-y-6 self-start">
           <thead>
             <tr className="text-center">
@@ -292,12 +355,10 @@ export default function CartStep2() {
               </th>
             </tr>
           </thead>
-
           <tbody>
             {selectedItems.map((item) => {
-              // 拆出圖片陣列
               const imageList = item.image_url?.split(",") || [];
-              const mainImage = imageList[0]?.trim(); // 取第一張，並去除空格
+              const mainImage = imageList[0]?.trim();
 
               return (
                 <CartItem
@@ -315,10 +376,6 @@ export default function CartStep2() {
         <div className="lg:w-1/3 lg:border lg:border-[#4F4B4B] lg:p-8 rounded-xl">
           <form className="text-lg" onSubmit={onSubmit}>
             {/* 收件資訊 */}
-            {/* <p className="mb-4 text-[#AFC16D] text-lg border-b-2 border-[#AFC16D] pb-2 font-medium">
-              收件資訊
-            </p> */}
-
             <div className="flex justify-between items-center">
               <p className="mb-4 text-[#AFC16D] text-lg border-b-2 border-[#AFC16D] pb-2 font-medium">
                 收件資訊
@@ -362,15 +419,13 @@ export default function CartStep2() {
               />
             </div>
 
-            {/* 運送方式選擇 */}
+            {/* 運送方式 */}
             <div>
               <p className="block text-[#AFC16D] my-4 text-lg border-b-2 pb-2 font-medium border-[#AFC16D]">
                 運送方式
               </p>
 
-              {/* 改過樣式 */}
               <div className="flex gap-4 mb-4 text-[#333]">
-                {/* 超商 */}
                 <div className="flex items-center gap-2">
                   <input
                     className="mr-2 accent-[#AFC16D] scale-150 cursor-pointer"
@@ -385,7 +440,6 @@ export default function CartStep2() {
                   </label>
                 </div>
 
-                {/* 宅配 */}
                 <div className="flex items-center gap-2">
                   <input
                     className="mr-2 accent-[#AFC16D] scale-150 cursor-pointer"
@@ -403,28 +457,39 @@ export default function CartStep2() {
               </div>
             </div>
 
+            {/*超商取貨區塊 - 顯示當前選擇的門市 */}
             {deliveryMethod === "store_pickup" && (
               <div className="flex flex-col">
                 <UiButton
                   variant="gray"
                   otherClass="w-1/2 py-2 xl:py-2 rounded-xl"
-                  // onClick={handleStoreSelection}
                   onClick={(e) => {
                     e.preventDefault();
                     openWindow();
-
-                    setStoreInfo({
-                      store_id: store711.storeid,
-                      store_name: store711.storename,
-                      store_address: store711.storeaddress,
-                    });
                   }}
                 >
-                  選擇門市
+                  {currentStore?.storename ? "重新選擇門市" : "選擇門市"}
                 </UiButton>
+
                 <div className="mt-2 text-[#555]">
-                  <p>門市名稱：{store711.storename}</p>
-                  <p>門市地址：{store711.storeaddress}</p>
+                  <p>
+                    門市名稱：
+                    {currentStore?.storename ||
+                      storeInfo.store_name ||
+                      "尚未選擇"}
+                  </p>
+                  <p>
+                    門市地址：
+                    {currentStore?.storeaddress ||
+                      storeInfo.store_address ||
+                      "尚未選擇"}
+                  </p>
+                  {(currentStore?.storeid || storeInfo.store_id) && (
+                    <p className="text-[#7F9161]text-sm mt-1">已選擇門市</p>
+                  )}
+                  {!currentStore?.storeid && !storeInfo.store_id && (
+                    <p className="text-red-500 text-sm mt-1">請選擇門市</p>
+                  )}
                 </div>
               </div>
             )}
@@ -455,21 +520,20 @@ export default function CartStep2() {
               <select
                 name="payment_method"
                 className="w-full bg-[#F5F5F5] py-2 pl-3 text-[#333] rounded-lg"
-                value={cartFormData.payment_method} // 綁定 state
-                onChange={cartFiledChanged} // 使用通用處理函式
+                value={cartFormData.payment_method}
+                onChange={cartFiledChanged}
               >
                 <option value="" disabled>
                   請選擇付款方式
                 </option>
                 <option value="cash">貨到付款</option>
                 <option value="ecpay">綠界金流付款（信用卡、行動支付）</option>
-                {/* <option value="line_pay">Line Pay</option> */}
               </select>
             </div>
 
-            {/* 使用優惠卷 */}
+            {/* 優惠券 */}
             <p className="mt-6 mb-4 text-[#AFC16D] text-lg border-b-2 border-[#AFC16D] pb-2 font-medium">
-              優惠卷
+              優惠券
             </p>
 
             <select
@@ -481,12 +545,13 @@ export default function CartStep2() {
               <option value="">尚未選擇優惠券</option>
               {userDiscounts.map((discount) => (
                 <option key={discount.id} value={discount.id}>
-                  {discount.name} - {discount.discount_value}{" "}
-                  {discount.discount_type === "amount" ? "元" : "%"}
+                  {discount.name} - {discount.discount_value}
+                  {discount.discount_type === "元" }
                 </option>
               ))}
             </select>
 
+            {/* 金額計算 */}
             <div className="flex justify-center">
               <div className="flex flex-col gap-12 text-lg w-full mt-16">
                 <div className="flex justify-between">
@@ -498,7 +563,7 @@ export default function CartStep2() {
                   <span>NT${deliveryFee}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>優惠卷折扣</span>
+                  <span>優惠券折扣</span>
                   <span>-NT${discountValue}</span>
                 </div>
                 <div className="flex justify-between font-bold">
