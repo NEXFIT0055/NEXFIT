@@ -70,7 +70,7 @@ export default function CouponPage() {
 
       if (result.success && Array.isArray(result.data)) {
         const formattedCoupons = result.data.map((item) => ({
-          code: `${item.id}`,
+          code: `$DISC${item.id}`,
           value:
             item.discount_type === "percentage"
               ? `${item.discount_value}%`
