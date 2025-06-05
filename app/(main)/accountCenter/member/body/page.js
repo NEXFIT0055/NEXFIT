@@ -201,13 +201,11 @@ const CourseCard = ({ title, description, imgSrc, type, href }) => (
       />
     </div>
     <div className="flex flex-col items-center gap-3 flex-1 justify-center">
-      <p className="text-[#101828] text-lg font-bold text-center">
-        {title}
+      <p className="text-[#101828] text-lg font-bold text-center">{title}</p>
+      <p className="text-[#101828] text-base text-center">
+        教練名稱：{description}
       </p>
-        <p className="text-[#101828] text-base text-center">
-          教練名稱：{description}
-        </p>
-      
+
       <Link href={href}>
         <Button
           size="lg"
@@ -234,7 +232,7 @@ const CarouselSection = ({ title, item }) => (
           ))}
         </CarouselContent>
         <CarouselPrevious />
-        <CarouselNext className="mr-5" />
+        <CarouselNext />
       </Carousel>
     </div>
   </div>
