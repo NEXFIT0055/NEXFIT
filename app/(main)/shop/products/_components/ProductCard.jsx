@@ -433,148 +433,147 @@ const ProductCard = ({ product }) => {
           >
             加入購物車
           </AlertDialogTrigger>
+
           <AlertDialogContent className="sm:w-lg md:w-3xl w-3/5 p-10 max-h-[80vh] overflow-y-auto text-left">
             <AlertDialogTitle></AlertDialogTitle>
 
             <AlertDialogHeader className="relative">
               <AlertDialogDescription asChild>
-                <div className="flex m-3 flex-col md:flex-row">
-                  {/* 產品圖片 */}
-                  <div className="w-full mb-4 lg:w-1/2 lg:mb-0 lg:mr-6">
-                    {productImage && !imageError ? (
-                      <img
-                        src={productImage}
-                        alt={product.name || "商品圖片"}
-                        className="w-full h-full object-cover rounded-md"
-                        onError={handleImageError}
-                        // onLoad={() =>
-                        //   console.log("Dialog 圖片載入成功:", productImage)
-                        // }
-                      />
-                    ) : (
-                      // 當沒有圖片或圖片載入失敗時的佔位符
-                      <div className="w-full aspect-square flex items-center justify-center bg-gray-200 rounded-md">
-                        <div className="text-center">
-                          <div className="text-gray-400 text-6xl mb-4"></div>
-                          <p className="text-gray-500 text-lg">暫無圖片</p>
+                <div className="relative">
+                  <div className="flex m-3 flex-col md:flex-row">
+                    {/* 產品圖片 */}
+                    <div className="w-full mb-4 lg:w-1/2 lg:mb-0 lg:mr-6">
+                      {productImage && !imageError ? (
+                        <img
+                          src={productImage}
+                          alt={product.name || "商品圖片"}
+                          className="w-full h-full object-cover rounded-md"
+                          onError={handleImageError}
+                        />
+                      ) : (
+                        <div className="w-full aspect-square flex items-center justify-center bg-gray-200 rounded-md">
+                          <div className="text-center">
+                            <div className="text-gray-400 text-6xl mb-4">
+                              📷
+                            </div>
+                            <p className="text-gray-500 text-lg">暫無圖片</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 產品資訊 */}
+                    <div className="w-full lg:w-1/2 text-left">
+                      <h2 className="font-semibold text-xl text-gray-800">
+                        {product.name || "商品名稱"}
+                      </h2>
+
+                      <ul className="text-base text-gray-600 mt-4 list-disc pl-4 space-y-1">
+                        {productDescription.length > 0 ? (
+                          productDescription.map((item, index) => (
+                            <li key={index}>{item}</li>
+                          ))
+                        ) : (
+                          <li>暫無商品描述</li>
+                        )}
+                      </ul>
+
+                      <div className="flex items-center mt-4">
+                        <span className="text-lg text-gray-500 mr-2">
+                          ${product.price || "0"}
+                        </span>
+                        {isProductFavorite && (
+                          <span className="text-xs text-[#A9BA5C] font-medium ml-2 px-2 py-1 rounded border border-[#A9BA5C]">
+                            已收藏
+                          </span>
+                        )}
+                      </div>
+
+                      {/* 數量與按鈕 */}
+                      <div className="mt-2">
+                        <div className="py-3 flex justify-center items-center">
+                          <button
+                            onClick={handleDecrease}
+                            className="text-lg font-semibold px-6 py-2 border border-gray-300 rounded-l-md hover:bg-gray-100 cursor-pointer"
+                          >
+                            −
+                          </button>
+                          <span className="text-lg font-semibold px-6 py-2 border-t border-b border-gray-300">
+                            {quantity}
+                          </span>
+                          <button
+                            onClick={handleIncrease}
+                            className="text-lg font-semibold px-6 py-2 border border-gray-300 rounded-r-md hover:bg-gray-100 cursor-pointer"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <div className="flex gap-4 py-4 mt-2">
+                          <button
+                            onClick={() => {
+                              const token = localStorage.getItem("token");
+                              if (!token) {
+                                toast.error("請先登入會員後再進行操作！");
+                                return;
+                              }
+
+                              addItem({
+                                product_id: productId,
+                                quantity: quantity,
+                              });
+                            }}
+                            className="flex-1 py-3 bg-black text-white rounded-lg text-lg font-medium hover:opacity-80 transition cursor-pointer"
+                          >
+                            加入購物車
+                          </button>
+
+                          <button
+                            className="flex-1 py-3 text-white rounded-lg bg-[#A9BA5C] text-lg font-medium hover:opacity-80 transition cursor-pointer"
+                            onClick={handleBuyNow}
+                          >
+                            立即購買
+                          </button>
+                        </div>
+
+                        {/* 收藏按鈕 */}
+                        <div className="flex justify-center mt-4">
+                          <button
+                            onClick={handleFavoriteClick}
+                            disabled={isToggling}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                              isProductFavorite
+                                ? "bg-white text-[#AFC16D] border border-gray-200"
+                                : "bg-gray-50 text-gray-600 hover:bg-white hover:text-[#AFC16D] border border-gray-200"
+                            } ${
+                              isToggling
+                                ? "opacity-50 cursor-not-allowed"
+                                : "cursor-pointer"
+                            }`}
+                          >
+                            <FaHeart
+                              className={`h-4 w-4 ${
+                                isProductFavorite ? "text-[#AFC16D]" : ""
+                              }`}
+                            />
+                            <span className="text-sm font-medium">
+                              {isToggling
+                                ? "處理中..."
+                                : isProductFavorite
+                                ? "已收藏"
+                                : "加入收藏"}
+                            </span>
+                          </button>
                         </div>
                       </div>
-                    )}
-                  </div>
-
-                  {/* 產品文字 */}
-                  <div className="w-full lg:w-1/2 text-left">
-                    {/* 產品名稱 */}
-                    <h2 className="font-semibold text-xl text-gray-800">
-                      {product.name || "商品名稱"}
-                    </h2>
-
-                    {/* 產品描述 */}
-                    <ul className="text-base text-gray-600 mt-4 list-disc pl-4 space-y-1">
-                      {productDescription.length > 0 ? (
-                        productDescription.map((item, index) => (
-                          <li key={index}>{item}</li>
-                        ))
-                      ) : (
-                        <li>暫無商品描述</li>
-                      )}
-                    </ul>
-
-                    {/* 產品價格 */}
-                    <div className="flex items-center mt-4">
-                      <span className="text-lg text-gray-500 mr-2">
-                        ${product.price || "0"}
-                      </span>
-                      {/* 收藏狀態指示 */}
-                      {isProductFavorite && (
-                        <span className="text-xs text-[#A9BA5C] font-medium ml-2  px-2 py-1 rounded border border-[#A9BA5C]">
-                          已收藏
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="mt-2">
-                      {/* 數量選擇 */}
-                      <div className="py-3 flex justify-center items-center">
-                        <button
-                          onClick={handleDecrease}
-                          className="text-lg font-semibold px-6 py-2 border border-gray-300 rounded-l-md hover:bg-gray-100 cursor-pointer"
-                        >
-                          −
-                        </button>
-                        <span className="text-lg font-semibold px-6 py-2 border-t border-b border-gray-300">
-                          {quantity}
-                        </span>
-                        <button
-                          onClick={handleIncrease}
-                          className="text-lg font-semibold px-6 py-2 border border-gray-300 rounded-r-md hover:bg-gray-100 cursor-pointer"
-                        >
-                          +
-                        </button>
-                      </div>
-
-                      {/* 按鈕 */}
-                      <div className="flex gap-4 py-4 mt-2">
-                        <button
-                          onClick={() => {
-                            const token = localStorage.getItem("token");
-
-                            if (!token) {
-                              toast.error("請先登入會員後再進行操作！");
-                              return;
-                            }
-
-                            addItem({
-                              product_id: productId,
-                              quantity: quantity,
-                            });
-                          }}
-                          className="flex-1 py-3 bg-black text-white rounded-lg text-lg font-medium hover:opacity-80 transition cursor-pointer"
-                        >
-                          加入購物車
-                        </button>
-                        <button
-                          className="flex-1 py-3 text-white rounded-lg bg-[#A9BA5C] text-lg font-medium hover:opacity-80 transition cursor-pointer"
-                          onClick={handleBuyNow}
-                        >
-                          立即購買
-                        </button>
-                      </div>
-                      <div className="flex justify-center mt-4">
-                        <button
-                          onClick={handleFavoriteClick}
-                          disabled={isToggling}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                            isProductFavorite
-                              ? "bg-white text-[#AFC16D] border border-gray-200"
-                              : "bg-gray-50 text-gray-600 hover:bg-white hover:text-[#AFC16D] border border-gray-200"
-                          } ${
-                            isToggling
-                              ? "opacity-50 cursor-not-allowed"
-                              : "cursor-pointer"
-                          }`}
-                        >
-                          <FaHeart
-                            className={`h-4 w-4 ${
-                              isProductFavorite ? "text-[#AFC16D]" : ""
-                            }`}
-                          />
-                          <span className="text-sm font-medium">
-                            {isToggling
-                              ? "處理中..."
-                              : isProductFavorite
-                              ? "已收藏"
-                              : "加入收藏"}
-                          </span>
-                        </button>
-                      </div>
                     </div>
                   </div>
+
+                  {/* ✅ 包在外層 div 中的 AlertDialogCancel */}
+                  <AlertDialogCancel className="absolute -right-8 -top-8 cursor-pointer border-none !shadow-none hover:bg-white">
+                    X
+                  </AlertDialogCancel>
                 </div>
-
-                <AlertDialogCancel className="absolute -right-8 -top-8 cursor-pointer border-none !shadow-none hover:bg-white">
-                  X
-                </AlertDialogCancel>
               </AlertDialogDescription>
             </AlertDialogHeader>
           </AlertDialogContent>
