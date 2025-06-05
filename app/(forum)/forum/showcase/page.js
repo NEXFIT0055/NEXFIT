@@ -2,7 +2,12 @@
 import { useRef } from "react";
 import { FaRegUser, FaRegClock, FaArrowLeft } from "react-icons/fa";
 import { Button } from "@/app/components/ui/button";
-import { Card, CardContent, CardTitle, CardDescription } from "@/app/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/app/components/ui/card";
 import { motion, useInView } from "framer-motion";
 import { useRouter } from "next/navigation";
 // import AnimatedBackground from "@/app/(forum)/forum/_components/AnimatedBackground";
@@ -13,8 +18,8 @@ const showcaseItems = [
     title: "三個月減重 10 公斤",
     author: "王小明",
     date: "2024-03-15 ~ 2024-06-15",
-    beforeImage: "/images/forum/showcase/man01-1.jpg",
-    afterImage: "/images/forum/showcase/man01-2.jpg",
+    beforeImage: "/images/forum/showcase/man01-1.JPG",
+    afterImage: "/images/forum/showcase/man01-2.JPG",
     description: "透過規律運動和健康飲食，成功在三個月內減重 10 公斤。",
     highlight: "減重 10kg / 12週",
   },
@@ -23,8 +28,8 @@ const showcaseItems = [
     title: "增肌計畫：從瘦弱到強壯",
     author: "李大壯",
     date: "2024-03-10 ~ 2024-09-10",
-    beforeImage: "/images/forum/showcase/man02-1.jpg",
-    afterImage: "/images/forum/showcase/man02-2.jpg",
+    beforeImage: "/images/forum/showcase/man02-1.JPG",
+    afterImage: "/images/forum/showcase/man02-2.JPG",
     description: "六個月的重量訓練，體重增加 8 公斤，體脂率維持在 15%。",
     highlight: "增肌 8kg / 24週",
   },
@@ -33,8 +38,8 @@ const showcaseItems = [
     title: "改善體態：從駝背到挺拔",
     author: "張美玲",
     date: "2024-03-05 ~ 2024-05-30",
-    beforeImage: "/images/forum/showcase/woman03-1.jpg",
-    afterImage: "/images/forum/showcase/woman03-2.jpg",
+    beforeImage: "/images/forum/showcase/woman03-1.JPG",
+    afterImage: "/images/forum/showcase/woman03-2.JPG",
     description: "透過瑜珈和核心訓練，改善姿勢問題，提升整體氣質。",
     highlight: "體態改善 / 8週",
   },
@@ -43,8 +48,8 @@ const showcaseItems = [
     title: "健康飲食改善計畫",
     author: "陳健康",
     date: "2024-03-01 ~ 2024-04-15",
-    beforeImage: "/images/forum/showcase/man03-1.jpg",
-    afterImage: "/images/forum/showcase/man03-2.jpg",
+    beforeImage: "/images/forum/showcase/man03-1.JPG",
+    afterImage: "/images/forum/showcase/man03-2.JPG",
     description: "調整飲食習慣，改善腸胃問題，提升整體健康狀態。",
     highlight: "腸胃改善 / 6週",
   },
@@ -53,8 +58,8 @@ const showcaseItems = [
     title: "減重 15 公斤的旅程",
     author: "林小芳",
     date: "2024-02-28 ~ 2024-08-28",
-    beforeImage: "/images/forum/showcase/woman01-1.jpg",
-    afterImage: "/images/forum/showcase/woman01-2.jpg",
+    beforeImage: "/images/forum/showcase/woman01-1.JPG",
+    afterImage: "/images/forum/showcase/woman01-2.JPG",
     description: "透過有氧運動和飲食控制，半年內成功減重 15 公斤。",
     highlight: "減重 15kg / 24週",
   },
@@ -63,8 +68,8 @@ const showcaseItems = [
     title: "增肌減脂同步進行",
     author: "黃建國",
     date: "2024-02-25 ~ 2024-08-25",
-    beforeImage: "/images/forum/showcase/man04-1.jpg",
-    afterImage: "/images/forum/showcase/man04-2.jpg",
+    beforeImage: "/images/forum/showcase/man04-1.JPG",
+    afterImage: "/images/forum/showcase/man04-2.JPG",
     description: "專業的訓練計畫，同時達到增肌和減脂的目標。",
     highlight: "增肌減脂 / 20週",
   },
@@ -87,7 +92,7 @@ const showcaseItems = [
     afterImage: "/images/forum/showcase/woman04-2.jpg",
     description: "從零運動到每週運動 4 次，精神與體力明顯提升。",
     highlight: "運動習慣 / 12週",
-  }
+  },
 ];
 
 // 子元件，避免在 map 內宣告 hook

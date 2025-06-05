@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Navbar from "./components/Navbar_index";
+import Footer from "@/app/components/Footer_index";
+import LoginModal from "./components/login";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
 import {
   FaTree,
   FaDumbbell,
@@ -32,21 +34,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import React from "react";
-
-// 動態載入需要 Firebase 的組件，避免 SSR 錯誤
-const Navbar = dynamic(() => import("./components/Navbar_index"), {
-  ssr: false,
-  loading: () => <div className="h-16 bg-white"></div>,
-});
-
-const Footer = dynamic(() => import("@/app/components/Footer_index"), {
-  ssr: false,
-  loading: () => <div className="h-20 bg-gray-100"></div>,
-});
-
-const LoginModal = dynamic(() => import("./components/login"), {
-  ssr: false,
-});
 
 const products = [
   {
@@ -240,14 +227,14 @@ const SPORT_RECOMMENDATIONS = {
     title: "自然療癒者",
     description:
       "你適合戶外瑜伽、太極拳、健行等舒緩型運動。這些運動能幫助你在大自然中放鬆身心，同時提升身體素質。",
-    image: "/images/quiz/yoga-outdoor.jpg",
+    image: "/images/quiz/yoga-outdoor.JPG",
     tags: ["戶外", "舒緩", "獨處", "療癒"],
   },
   outdoor_medium_group_fitness: {
     title: "戶外探險家",
     description:
       "你適合越野跑、攀岩、戶外團體訓練等活動。這些運動能讓你享受大自然的同時，挑戰自我極限。",
-    image: "/images/quiz/outdoor-adventure.jpg",
+    image: "/images/quiz/outdoor-adventure.JPG",
     tags: ["戶外", "團體", "挑戰", "探險"],
   },
   // 室內系列
@@ -255,14 +242,14 @@ const SPORT_RECOMMENDATIONS = {
     title: "團體戰士",
     description:
       "你適合高強度間歇訓練(HIIT)、拳擊、CrossFit等團體課程。這些運動能激發你的競爭精神，同時建立社交連結。",
-    image: "/images/quiz/group-fitness.jpg",
+    image: "/images/quiz/group-fitness.JPG",
     tags: ["室內", "高強度", "團體", "挑戰"],
   },
   indoor_medium_personal_muscle: {
     title: "力量追求者",
     description:
       "你適合重量訓練、功能性訓練等個人指導課程。這些運動能幫助你建立肌肉，提升力量。",
-    image: "/images/quiz/strength-training.jpg",
+    image: "/images/quiz/strength-training.JPG",
     tags: ["室內", "中強度", "個人", "力量"],
   },
   // 團體系列
@@ -270,14 +257,14 @@ const SPORT_RECOMMENDATIONS = {
     title: "團隊領袖",
     description:
       "你適合團體運動如籃球、排球、足球等。這些運動能培養團隊精神，同時提升體能。",
-    image: "/images/quiz/team-sports.jpg",
+    image: "/images/quiz/team-sports.JPG",
     tags: ["團體", "高強度", "社交", "競技"],
   },
   group_light_group_relax: {
     title: "社交運動者",
     description:
       "你適合團體舞蹈、太極、瑜伽等課程。這些運動能讓你享受社交樂趣，同時保持健康。",
-    image: "/images/quiz/group-dance.jpg",
+    image: "/images/quiz/group-dance.JPG",
     tags: ["團體", "舒緩", "社交", "樂趣"],
   },
   // 居家系列
@@ -285,111 +272,111 @@ const SPORT_RECOMMENDATIONS = {
     title: "居家健身達人",
     description:
       "你適合居家健身、徒手訓練、瑜伽等運動。這些運動能讓你在舒適的環境中達到健身目標。",
-    image: "/images/quiz/home-fitness.jpg",
+    image: "/images/quiz/home-fitness.JPG",
     tags: ["居家", "舒緩", "獨處", "便利"],
   },
   home_medium_free_fitness: {
     title: "自由健身者",
     description:
       "你適合居家HIIT、有氧運動、核心訓練等。這些運動能讓你在家也能達到良好的健身效果。",
-    image: "/images/quiz/home-hiit.jpg",
+    image: "/images/quiz/home-hiit.JPG",
     tags: ["居家", "中強度", "自由", "效率"],
   },
   // --- 16組前兩題組合 ---
   outdoor_light: {
     title: "戶外舒緩型",
     description: "你適合在戶外進行輕鬆舒緩的運動，如瑜伽、散步、太極等。",
-    image: "/images/quiz/yoga-outdoor.jpg",
+    image: "/images/quiz/yoga-outdoor.JPG",
     tags: ["戶外", "舒緩"],
   },
   outdoor_medium: {
     title: "戶外中強度型",
     description: "你適合在戶外進行中等強度的運動，如慢跑、登山等。",
-    image: "/images/quiz/outdoor-adventure.jpg",
+    image: "/images/quiz/outdoor-adventure.JPG",
     tags: ["戶外", "中強度"],
   },
   outdoor_high: {
     title: "戶外高強度型",
     description: "你適合在戶外進行高強度運動，如越野跑、登山健行等。",
-    image: "/images/quiz/outdoor-adventure.jpg",
+    image: "/images/quiz/outdoor-adventure.JPG",
     tags: ["戶外", "高強度"],
   },
   outdoor_mixed: {
     title: "戶外混合型",
     description: "你適合在戶外嘗試多種強度的運動，享受多元運動樂趣。",
-    image: "/images/quiz/outdoor-adventure.jpg",
+    image: "/images/quiz/outdoor-adventure.JPG",
     tags: ["戶外", "混合"],
   },
   indoor_light: {
     title: "室內舒緩型",
     description: "你適合在室內進行輕鬆舒緩的運動，如瑜伽、伸展等。",
-    image: "/images/quiz/group-fitness.jpg",
+    image: "/images/quiz/group-fitness.JPG",
     tags: ["室內", "舒緩"],
   },
   indoor_medium: {
     title: "室內中強度型",
     description: "你適合在室內進行中等強度的運動，如健身房重訓、有氧等。",
-    image: "/images/quiz/strength-training.jpg",
+    image: "/images/quiz/strength-training.JPG",
     tags: ["室內", "中強度"],
   },
   indoor_high: {
     title: "室內高強度型",
     description: "你適合在室內進行高強度運動，如HIIT、拳擊等。",
-    image: "/images/quiz/group-fitness.jpg",
+    image: "/images/quiz/group-fitness.JPG",
     tags: ["室內", "高強度"],
   },
   indoor_mixed: {
     title: "室內混合型",
     description: "你適合在室內嘗試多種強度的運動，享受多元運動樂趣。",
-    image: "/images/quiz/group-fitness.jpg",
+    image: "/images/quiz/group-fitness.JPG",
     tags: ["室內", "混合"],
   },
   group_light: {
     title: "團體舒緩型",
     description: "你適合參加團體舒緩運動，如團體瑜伽、舞蹈等。",
-    image: "/images/quiz/group-dance.jpg",
+    image: "/images/quiz/group-dance.JPG",
     tags: ["團體", "舒緩"],
   },
   group_medium: {
     title: "團體中強度型",
     description: "你適合參加團體中強度運動，如團體有氧、球類等。",
-    image: "/images/quiz/team-sports.jpg",
+    image: "/images/quiz/team-sports.JPG",
     tags: ["團體", "中強度"],
   },
   group_high: {
     title: "團體高強度型",
     description: "你適合參加團體高強度運動，如團體HIIT、競技球類等。",
-    image: "/images/quiz/team-sports.jpg",
+    image: "/images/quiz/team-sports.JPG",
     tags: ["團體", "高強度"],
   },
   group_mixed: {
     title: "團體混合型",
     description: "你適合參加團體混合強度運動，享受多元團體運動樂趣。",
-    image: "/images/quiz/team-sports.jpg",
+    image: "/images/quiz/team-sports.JPG",
     tags: ["團體", "混合"],
   },
   home_light: {
     title: "居家舒緩型",
     description: "你適合在家進行舒緩運動，如居家瑜伽、伸展等。",
-    image: "/images/quiz/home-fitness.jpg",
+    image: "/images/quiz/home-fitness.JPG",
     tags: ["居家", "舒緩"],
   },
   home_medium: {
     title: "居家中強度型",
     description: "你適合在家進行中強度運動，如居家有氧、核心訓練等。",
-    image: "/images/quiz/home-hiit.jpg",
+    image: "/images/quiz/home-hiit.JPG",
     tags: ["居家", "中強度"],
   },
   home_high: {
     title: "居家高強度型",
     description: "你適合在家進行高強度運動，如居家HIIT、重訓等。",
-    image: "/images/quiz/home-hiit.jpg",
+    image: "/images/quiz/home-hiit.JPG",
     tags: ["居家", "高強度"],
   },
   home_mixed: {
     title: "居家混合型",
     description: "你適合在家嘗試多種強度的運動，享受多元運動樂趣。",
-    image: "/images/quiz/home-hiit.jpg",
+    image: "/images/quiz/home-hiit.JPG",
     tags: ["居家", "混合"],
   },
   // 大方向 fallback
@@ -397,28 +384,28 @@ const SPORT_RECOMMENDATIONS = {
     title: "戶外運動愛好者",
     description:
       "你熱愛大自然，適合各種戶外運動，建議多參與戶外活動，享受陽光與新鮮空氣。",
-    image: "/images/quiz/yoga-outdoor.jpg",
+    image: "/images/quiz/yoga-outdoor.JPG",
     tags: ["戶外", "自然", "陽光"],
   },
   indoor: {
     title: "室內運動愛好者",
     description:
       "你偏好在舒適的環境中運動，建議參加健身房、室內團體課程或個人訓練。",
-    image: "/images/quiz/group-fitness.jpg",
+    image: "/images/quiz/group-fitness.JPG",
     tags: ["室內", "舒適", "健身房"],
   },
   group: {
     title: "團體運動愛好者",
     description:
       "你喜歡與人互動，適合參加團體運動如球類、舞蹈等，享受團隊合作的樂趣。",
-    image: "/images/quiz/team-sports.jpg",
+    image: "/images/quiz/team-sports.JPG",
     tags: ["團體", "互動", "合作"],
   },
   home: {
     title: "居家運動愛好者",
     description:
       "你喜歡在家運動，建議多做徒手訓練、瑜伽或線上課程，方便又自在。",
-    image: "/images/quiz/home-fitness.jpg",
+    image: "/images/quiz/home-fitness.JPG",
     tags: ["居家", "便利", "自在"],
   },
 };
@@ -569,12 +556,10 @@ const courseList = [
   { title: "全身循環運動課程", teacher: "Peggy" },
   { title: "肌肉放鬆與筋膜釋放", teacher: "Howard" },
 ];
-
 function getDeterministicTime(idx) {
   const times = ["10:00", "14:00", "16:00", "18:00", "19:00", "20:00"];
   return times[idx % times.length];
 }
-
 const scheduledCourses = weekDays.map((day, idx) => {
   const course = courseList[idx % courseList.length];
   return {
@@ -584,7 +569,6 @@ const scheduledCourses = weekDays.map((day, idx) => {
     teacher: course.teacher,
   };
 });
-
 // 月曆資料生成
 function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
@@ -621,8 +605,6 @@ const courseIdMap = {
 };
 
 export default function Home() {
-  // 客戶端檢查
-  const [mounted, setMounted] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -644,35 +626,28 @@ export default function Home() {
   const [calendarYear, setCalendarYear] = useState(today.getFullYear());
   const [quizStarted, setQuizStarted] = useState(true);
 
-  // 客戶端掛載檢查
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    // Set initial window size
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
 
-  useEffect(() => {
-    if (mounted) {
-      // Set initial window size
+    // Add window resize listener
+    const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
+    };
 
-      // Add window resize listener
-      const handleResize = () => {
-        setWindowSize({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-      };
-
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, [mounted]);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Generate confetti items only when showConfetti changes
   useEffect(() => {
-    if (showConfetti && mounted) {
+    if (showConfetti) {
       const items = Array.from({ length: 50 }, (_, i) => ({
         id: i,
         x: Math.random() * (windowSize.width || 0),
@@ -683,7 +658,7 @@ export default function Home() {
     } else {
       setConfettiItems([]);
     }
-  }, [showConfetti, windowSize.width, mounted]);
+  }, [showConfetti, windowSize.width]);
 
   const scrollLeft = () => {
     if (scrollRef.current)
@@ -738,7 +713,7 @@ export default function Home() {
           title: "全能運動者",
           description:
             "你適合多種運動類型，建議嘗試不同的運動來找到最適合你的方式。",
-          image: "/images/quiz/all-around.jpg",
+          image: "/images/quiz/all-around.JPG",
           tags: ["全能", "探索", "多元", "適應"],
         }
       );
@@ -789,18 +764,6 @@ export default function Home() {
       teacher: course.teacher,
     };
   });
-
-  // 如果還沒掛載到客戶端，顯示載入畫面
-  if (!mounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#E7E7E5]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#7F9161] mx-auto mb-4"></div>
-          <p className="text-xl text-[#7F9161]">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col overflow-hidden scroll-smooth snap-y snap-mandatory bg-[#E7E7E5]">
@@ -1022,6 +985,19 @@ export default function Home() {
                       >
                         NT${product.price}
                       </span>
+                      {/* 星星評等 */}
+                      {/* <div className="flex justify-center mt-2 gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-5 h-5" viewBox="0 0 20 20">
+                            <path
+                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.286 3.966c.3.921-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.176 0l-3.388 2.462c-.784.57-1.838-.197-1.539-1.118l1.286-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"
+                              fill={i < product.rating ? "#FFE03C" : "#E0E0E0"}
+                              // stroke="#D4D4D9"
+                              // strokeWidth="1"
+                            />
+                          </svg>
+                        ))}
+                      </div> */}
                     </div>
                   </div>
                 </SwiperSlide>
@@ -1510,7 +1486,6 @@ export default function Home() {
             )}
           </div>
         </motion.section>
-
         {/* GOOGLE 地圖區塊 */}
         <motion.section
           initial={{ opacity: 0, y: 50 }}

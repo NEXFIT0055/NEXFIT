@@ -40,7 +40,6 @@ export default function ForumPostDetailPage() {
   const [commentContent, setCommentContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isCollected, setIsCollected] = useState(false); // 是否已收藏
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // 登入模態窗口狀態
@@ -48,31 +47,52 @@ export default function ForumPostDetailPage() {
   const [showEmoji, setShowEmoji] = useState(false);
 
   // 檢查登入狀態
-  useEffect(() => {
+  const checkLoginStatus = useCallback(() => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        const payload = JSON.parse(atob(token.split(".")[1]));
         // 預設 user 只存 userId
         setUser({ userId: payload.userId });
         // 再 fetch 用戶 profile
         fetch("/api/forum/user/profile", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         })
-          .then(res => res.json())
-          .then(data => {
-            setUser(prev => ({
+          .then((res) => res.json())
+          .then((data) => {
+            setUser((prev) => ({
               ...prev,
               name: data.name,
-              nickname: data.nickname
+              nickname: data.nickname,
             }));
+          })
+          .catch((error) => {
+            console.error("獲取用戶資料失敗:", error);
           });
       } catch (error) {
         console.error("無法解析 token:", error);
         localStorage.removeItem("token");
+        setUser(null);
       }
+    } else {
+      setUser(null);
     }
   }, []);
+
+  // 檢查登入狀態
+  useEffect(() => {
+    checkLoginStatus();
+  }, [checkLoginStatus]);
+
+  // 監聽登入模態關閉，重新檢查登入狀態
+  useEffect(() => {
+    if (!isLoginModalOpen) {
+      // 登入模態關閉後，延遲一下再檢查登入狀態，確保 localStorage 已更新
+      setTimeout(() => {
+        checkLoginStatus();
+      }, 500);
+    }
+  }, [isLoginModalOpen, checkLoginStatus]);
 
   // 取得文章
   useEffect(() => {
@@ -89,21 +109,21 @@ export default function ForumPostDetailPage() {
   // 檢查收藏狀態
   useEffect(() => {
     const checkCollectionStatus = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token || !id) return;
-      
+
       try {
-        const response = await fetch('/api/forum/favorite', {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await fetch("/api/forum/favorite", {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        
+
         if (response.ok) {
           const data = await response.json();
-          const favoriteIds = data.favorites.map(item => item.id);
+          const favoriteIds = data.favorites.map((item) => item.id);
           setIsCollected(favoriteIds.includes(Number(id)));
         }
       } catch (error) {
-        console.error('獲取收藏狀態失敗:', error);
+        console.error("獲取收藏狀態失敗:", error);
       }
     };
 
@@ -127,40 +147,45 @@ export default function ForumPostDetailPage() {
     if (!isLoginModalOpen && pendingAction) {
       const token = localStorage.getItem("token");
       if (token) {
-        pendingAction();
-        setPendingAction(null);
+        // 延遲執行，確保用戶狀態已更新
+        setTimeout(() => {
+          if (user) {
+            pendingAction();
+            setPendingAction(null);
+          }
+        }, 600);
       }
     }
-  }, [isLoginModalOpen, pendingAction]);
+  }, [isLoginModalOpen, pendingAction, user]);
 
   // 處理收藏按鈕點擊
   const handleCollection = async () => {
     const performCollectionAction = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token || !id) return;
 
-        const method = isCollected ? 'DELETE' : 'POST';
-        
+        const method = isCollected ? "DELETE" : "POST";
+
         // 立即在 UI 上更新狀態，提供即時反饋
         setIsCollected(!isCollected);
-        
-        const response = await fetch('/api/forum/favorite', {
+
+        const response = await fetch("/api/forum/favorite", {
           method,
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ post_id: Number(id) }),
         });
-        
+
         if (!response.ok) {
           // 如果請求失敗，還原狀態
           setIsCollected(isCollected);
-          throw new Error('收藏操作失敗');
+          throw new Error("收藏操作失敗");
         }
       } catch (error) {
-        console.error('收藏操作失敗:', error);
+        console.error("收藏操作失敗:", error);
         // 如果出錯，還原狀態
         setIsCollected(isCollected);
       }
@@ -186,34 +211,34 @@ export default function ForumPostDetailPage() {
   // 修改留言提交邏輯
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // 檢查是否已登入
     if (!user) {
-      setShowLoginModal(true);
+      setIsLoginModalOpen(true); // 改用統一的登入模態
       return;
     }
-    
+
     if (!commentContent.trim()) {
       alert("請輸入留言內容");
       return;
     }
-    
+
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`/api/forum/post/${id}/comments`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           content: commentContent,
         }),
       });
-      
+
       if (!res.ok) throw new Error("留言失敗");
-      
+
       setCommentContent("");
       fetchComments();
     } catch (err) {
@@ -232,7 +257,7 @@ export default function ForumPostDetailPage() {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ commentId }),
       });
@@ -256,11 +281,14 @@ export default function ForumPostDetailPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-6">
       {isLoginModalOpen && (
-        <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+        />
       )}
-      
+
       {/* 主圖 */}
-      <div className="w-full h-128 bg-gray-200 rounded-lg overflow-hidden">
+      <div className="w-full aspect-video bg-gray-200 rounded-lg overflow-hidden">
         {post.images?.length > 0 ? (
           <img
             src={post.images[0]}
@@ -293,9 +321,9 @@ export default function ForumPostDetailPage() {
         <button
           onClick={handleCollection}
           className={`flex items-center gap-1 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 cursor-pointer ${
-            isCollected ? 'text-yellow-500' : 'text-gray-400'
+            isCollected ? "text-yellow-500" : "text-gray-400"
           }`}
-          title={isCollected ? '取消收藏' : '加入收藏'}
+          title={isCollected ? "取消收藏" : "加入收藏"}
         >
           {isCollected ? (
             <FaBookmark className="text-lg" />
@@ -328,25 +356,28 @@ export default function ForumPostDetailPage() {
       {/* 留言區 */}
       <section className="mt-10">
         <h2 className="text-xl font-bold mb-4">留言區</h2>
-        
+
         {user ? (
           // 已登入狀態的留言表單
           <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-2">
             <div className="flex items-center gap-2 mb-2 text-sm text-gray-600">
-              <span>以 <strong>{user?.name || user?.nickname || "用戶"}</strong> 的身份留言</span>
+              <span>
+                以 <strong>{user?.name || user?.nickname || "用戶"}</strong>{" "}
+                的身份留言
+              </span>
             </div>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: "relative" }}>
               <textarea
                 placeholder="輸入你的留言..."
                 className="border rounded-lg px-3 py-2 resize-none min-h-[100px] focus:ring-2 focus:ring-[#101828] focus:border-transparent pr-10"
                 value={commentContent}
                 onChange={(e) => setCommentContent(e.target.value)}
                 disabled={loading}
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
               />
               <button
                 type="button"
-                onClick={() => setShowEmoji(v => !v)}
+                onClick={() => setShowEmoji((v) => !v)}
                 className="absolute bottom-3 right-3 text-2xl bg-transparent border-none cursor-pointer p-0 m-0 text-[#AFC16D]"
                 tabIndex={-1}
                 style={{ lineHeight: 1 }}
@@ -354,9 +385,18 @@ export default function ForumPostDetailPage() {
                 <FaSmile />
               </button>
               {showEmoji && (
-                <div style={{ position: 'absolute', zIndex: 10, right: 0, bottom: '2.5rem' }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    zIndex: 10,
+                    right: 0,
+                    bottom: "2.5rem",
+                  }}
+                >
                   <Picker
-                    onEmojiSelect={emoji => setCommentContent(commentContent + emoji.native)}
+                    onEmojiSelect={(emoji) =>
+                      setCommentContent(commentContent + emoji.native)
+                    }
                     title="選擇表情"
                   />
                 </div>
@@ -377,7 +417,7 @@ export default function ForumPostDetailPage() {
           <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
             <p className="text-gray-600 text-center">
               <Button
-                onClick={() => setShowLoginModal(true)}
+                onClick={() => setIsLoginModalOpen(true)} // 改用統一的登入模態
                 className="bg-[#101828] hover:bg-gray-700 text-white"
               >
                 登入
@@ -409,20 +449,31 @@ export default function ForumPostDetailPage() {
               </div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                <button
-                  className={`ml-4 p-1 flex items-center bg-transparent border-none shadow-none focus:outline-none focus:ring-0 active:bg-transparent transition-colors duration-150 group ${
-                    user && String(c.user_id) === String(user.userId)
-                      ? 'text-gray-500 cursor-pointer'
-                      : 'text-gray-300 cursor-not-allowed'
-                  }`}
-                  style={{ background: 'none', boxShadow: 'none', border: 'none' }}
-                  onClick={() => (user && String(c.user_id) === String(user.userId)) ? setDeleteTarget(c.id) : null}
-                  disabled={!(user && String(c.user_id) === String(user.userId)) || loading}
-                  title="刪除留言"
-                  type="button"
-                >
-                  <FaTrash className="transition-colors duration-150 group-hover:text-[#101828]" />
-                </button>
+                  <button
+                    className={`ml-4 p-1 flex items-center bg-transparent border-none shadow-none focus:outline-none focus:ring-0 active:bg-transparent transition-colors duration-150 group ${
+                      user && String(c.user_id) === String(user.userId)
+                        ? "text-gray-500 cursor-pointer"
+                        : "text-gray-300 cursor-not-allowed"
+                    }`}
+                    style={{
+                      background: "none",
+                      boxShadow: "none",
+                      border: "none",
+                    }}
+                    onClick={() =>
+                      user && String(c.user_id) === String(user.userId)
+                        ? setDeleteTarget(c.id)
+                        : null
+                    }
+                    disabled={
+                      !(user && String(c.user_id) === String(user.userId)) ||
+                      loading
+                    }
+                    title="刪除留言"
+                    type="button"
+                  >
+                    <FaTrash className="transition-colors duration-150 group-hover:text-[#101828]" />
+                  </button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -460,32 +511,6 @@ export default function ForumPostDetailPage() {
           返回論壇主頁
         </Button>
       </div>
-
-      {/* 登入模態 */}
-      {showLoginModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">需要登入</h3>
-            <p className="text-gray-600 mb-4">請先登入後再進行留言</p>
-            <div className="flex gap-2 justify-end">
-              <Button
-                variant="outline"
-                onClick={() => setShowLoginModal(false)}
-              >
-                取消
-              </Button>
-              <Button
-                onClick={() => {
-                  router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
-                }}
-                className="bg-[#101828] hover:bg-gray-700 text-white"
-              >
-                前往登入
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
