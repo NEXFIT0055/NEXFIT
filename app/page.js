@@ -442,102 +442,100 @@ function ExploreCoursesSection() {
     {
       image: "/images/ExploreCourses01.jpg",
       title: "客製化訓練",
-      desc: "依身體節奏打造專屬訓練方式，從呼吸、動作到步調，每一步都為你量身設計，讓運動真正貼近你的生活與狀態。",
+      desc: "依身體節奏打造專屬訓練方式，從呼吸、動作到步調，每一步都為你量身設計，讓運動真正貼近你的生活。",
       link: "/reservation/course",
-      textPosition: "md:absolute md:top-[5%] md:left-[31%]",
-      imagePosition: "md:absolute md:top-[10%] md:right-[30%]",
+      textGridArea: "1 / 1 / 3 / 5",
+      imageGridArea: "2 / 5 / 4 / 8",
     },
     {
       image: "/images/ExploreCourses02.jpg",
       title: "營養補給",
       desc: "用適合自己的方式補營養，吃得開心才能走得更遠。不節食、不勉強，讓身體與心情都得到支持與滋養。",
       link: "/shop/products",
-      textPosition: "md:absolute md:top-[35%] md:right-[24%]",
-      imagePosition: "md:absolute md:top-[32%] md:left-[35%]",
+      textGridArea: "4 / 8 / 6 / 12",
+      imageGridArea: "5 / 4 / 7 / 8",
     },
     {
       image: "/images/ExploreCourses03.jpg",
       title: "持續練習",
       desc: "一步一腳印地練習與成長，不求快速蛻變，而是專注在每一次的累積中建立長久習慣，打造可持續的健康生活。",
       link: "/reservation/course",
-      textPosition: "md:absolute md:top-[53%] md:left-[31%]",
-      imagePosition: "md:absolute md:top-[55%] md:right-[30%]",
+      textGridArea: "7 / 1 / 9 / 5",
+      imageGridArea: "8 / 5 / 10 / 9",
     },
     {
       image: "/images/ExploreCourses04.jpg",
       title: "與內在連結",
       desc: "健身不只是流汗與燃燒，更是一場探索自我、與內在對話的旅程。相信自己，活出獨一無二的節奏與生活。",
       link: "/forum",
-      textPosition: "md:absolute md:top-[79%] md:right-[24%]",
-      imagePosition: "md:absolute md:top-[78%] md:left-[35%]",
+      textGridArea: "10 / 8 / 12 / 12",
+      imageGridArea: "11 / 4 / 13 / 8",
     },
   ];
-
-  // 插畫位置
-  const illustrations = [
-    {
-      src: "/images/illustration3.png",
-      className: "hidden md:block absolute left-[30%] top-[17%] w-28 z-0",
-    },
-    {
-      src: "/images/illustration1.png",
-      className: "hidden md:block absolute left-[62%] top-[40%] w-28 z-0",
-    },
-    {
-      src: "/images/illustration2.png",
-      className: "hidden md:block absolute left-[32%] top-[63%] w-28 z-0",
-    },
-  ];
-
   return (
     <motion.section
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
       viewport={{ once: false, amount: 0.2 }}
-      className="relative min-h-[1700px] py-24 bg-[#E7E7E5] overflow-hidden mb-10"
+      className="relative bg-[#E7E7E5] overflow-hidden"
     >
-      {/* 文字區塊 */}
-      {features.map((f, i) => (
-        <div
-          key={`text-${i}`}
-          className={`w-full md:w-[300px] max-w-full ${f.textPosition} z-10 py-1 `}
-        >
-          <div className="flex flex-col justify-center items-center md:items-start text-center md:text-left bg-transparent">
-            <div className="flex items-baseline gap-4 mb-2">
-              <span className="text-5xl md:text-6xl font-extrabold text-[#101828] tracking-tight leading-none select-none">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="text-lg md:text-lg font-bold text-[#101828]">
-                {f.title}
-              </span>
-            </div>
-            <p className="text-[#101828] text-base md:text-base font-medium max-w-xl">
-              {f.desc}
-            </p>
-          </div>
-        </div>
-      ))}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+        {/*  Grid  */}
+        <div className="grid grid-cols-12 grid-rows-12 gap-4 ">
+          {/* 文字區塊 */}
+          {features.map((feature, index) => (
+            <motion.div
+              key={`text-${index}`}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: false, amount: 0.3 }}
+              className="z-10 flex flex-col justify-center"
+              style={{ gridArea: feature.textGridArea }}
+            >
+              <div className="flex flex-col justify-center items-start text-left bg-transparent">
+                <div className="flex items-baseline gap-4">
+                  <span className="text-5xl md:text-6xl font-extrabold text-[#101828] tracking-tight leading-none select-none ">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-lg md:text-lg font-bold text-[#101828]">
+                    {feature.title}
+                  </span>
+                </div>
+                <p className="text-[#101828] text-base md:text-base font-medium max-w-xl leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
+            </motion.div>
+          ))}
 
-      {/* 圖片區塊 */}
-      {features.map((f, i) => (
-        <div
-          key={`image-${i}`}
-          className={`w-full md:w-auto ${f.imagePosition} z-10`}
-        >
-          <a href={f.link} className="shrink-0 group" tabIndex={-1}>
-            <div className="w-56 h-56 md:w-82 md:h-82 rounded-full overflow-hidden shadow-xl transition-transform group-hover:scale-105 cursor-pointer bg-white">
-              <Image
-                src={f.image}
-                alt={f.title}
-                width={350}
-                height={350}
-                className="object-cover w-full h-full"
-              />
-            </div>
-          </a>
+          {/* 圖片區塊 */}
+          {features.map((feature, index) => (
+            <motion.div
+              key={`image-${index}`}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: false, amount: 0.3 }}
+              className="z-10 flex justify-center items-center"
+              style={{ gridArea: feature.imageGridArea }}
+            >
+              <a href={feature.link} className="group" tabIndex={-1}>
+                <div className="w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden shadow-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl cursor-pointer bg-white">
+                  <Image
+                    src={feature.image}
+                    alt={feature.title}
+                    width={350}
+                    height={350}
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
+              </a>
+            </motion.div>
+          ))}
         </div>
-      ))}
+      </div>
     </motion.section>
   );
 }
