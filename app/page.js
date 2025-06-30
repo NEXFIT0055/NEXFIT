@@ -227,14 +227,14 @@ const SPORT_RECOMMENDATIONS = {
     title: "自然療癒者",
     description:
       "你適合戶外瑜伽、太極拳、健行等舒緩型運動。這些運動能幫助你在大自然中放鬆身心，同時提升身體素質。",
-    image: "/images/quiz/yoga-outdoor.JPG",
+    image: "/images/quiz/yoga-outdoor.jpg",
     tags: ["戶外", "舒緩", "獨處", "療癒"],
   },
   outdoor_medium_group_fitness: {
     title: "戶外探險家",
     description:
       "你適合越野跑、攀岩、戶外團體訓練等活動。這些運動能讓你享受大自然的同時，挑戰自我極限。",
-    image: "/images/quiz/outdoor-adventure.JPG",
+    image: "/images/quiz/outdoor-adventure.jpg",
     tags: ["戶外", "團體", "挑戰", "探險"],
   },
   // 室內系列
@@ -242,14 +242,14 @@ const SPORT_RECOMMENDATIONS = {
     title: "團體戰士",
     description:
       "你適合高強度間歇訓練(HIIT)、拳擊、CrossFit等團體課程。這些運動能激發你的競爭精神，同時建立社交連結。",
-    image: "/images/quiz/group-fitness.JPG",
+    image: "/images/quiz/group-fitness.jpg",
     tags: ["室內", "高強度", "團體", "挑戰"],
   },
   indoor_medium_personal_muscle: {
     title: "力量追求者",
     description:
       "你適合重量訓練、功能性訓練等個人指導課程。這些運動能幫助你建立肌肉，提升力量。",
-    image: "/images/quiz/strength-training.JPG",
+    image: "/images/quiz/strength-training.jpg",
     tags: ["室內", "中強度", "個人", "力量"],
   },
   // 團體系列
@@ -257,14 +257,14 @@ const SPORT_RECOMMENDATIONS = {
     title: "團隊領袖",
     description:
       "你適合團體運動如籃球、排球、足球等。這些運動能培養團隊精神，同時提升體能。",
-    image: "/images/quiz/team-sports.JPG",
+    image: "/images/quiz/team-sports.jpg",
     tags: ["團體", "高強度", "社交", "競技"],
   },
   group_light_group_relax: {
     title: "社交運動者",
     description:
       "你適合團體舞蹈、太極、瑜伽等課程。這些運動能讓你享受社交樂趣，同時保持健康。",
-    image: "/images/quiz/group-dance.JPG",
+    image: "/images/quiz/group-dance.jpg",
     tags: ["團體", "舒緩", "社交", "樂趣"],
   },
   // 居家系列
@@ -272,111 +272,111 @@ const SPORT_RECOMMENDATIONS = {
     title: "居家健身達人",
     description:
       "你適合居家健身、徒手訓練、瑜伽等運動。這些運動能讓你在舒適的環境中達到健身目標。",
-    image: "/images/quiz/home-fitness.JPG",
+    image: "/images/quiz/home-fitness.jpg",
     tags: ["居家", "舒緩", "獨處", "便利"],
   },
   home_medium_free_fitness: {
     title: "自由健身者",
     description:
       "你適合居家HIIT、有氧運動、核心訓練等。這些運動能讓你在家也能達到良好的健身效果。",
-    image: "/images/quiz/home-hiit.JPG",
+    image: "/images/quiz/home-hiit.jpg",
     tags: ["居家", "中強度", "自由", "效率"],
   },
   // --- 16組前兩題組合 ---
   outdoor_light: {
     title: "戶外舒緩型",
     description: "你適合在戶外進行輕鬆舒緩的運動，如瑜伽、散步、太極等。",
-    image: "/images/quiz/yoga-outdoor.JPG",
+    image: "/images/quiz/yoga-outdoor.jpg",
     tags: ["戶外", "舒緩"],
   },
   outdoor_medium: {
     title: "戶外中強度型",
     description: "你適合在戶外進行中等強度的運動，如慢跑、登山等。",
-    image: "/images/quiz/outdoor-adventure.JPG",
+    image: "/images/quiz/outdoor-adventure.jpg",
     tags: ["戶外", "中強度"],
   },
   outdoor_high: {
     title: "戶外高強度型",
     description: "你適合在戶外進行高強度運動，如越野跑、登山健行等。",
-    image: "/images/quiz/outdoor-adventure.JPG",
+    image: "/images/quiz/outdoor-adventure.jpg",
     tags: ["戶外", "高強度"],
   },
   outdoor_mixed: {
     title: "戶外混合型",
     description: "你適合在戶外嘗試多種強度的運動，享受多元運動樂趣。",
-    image: "/images/quiz/outdoor-adventure.JPG",
+    image: "/images/quiz/outdoor-adventure.jpg",
     tags: ["戶外", "混合"],
   },
   indoor_light: {
     title: "室內舒緩型",
     description: "你適合在室內進行輕鬆舒緩的運動，如瑜伽、伸展等。",
-    image: "/images/quiz/group-fitness.JPG",
+    image: "/images/quiz/group-fitness.jpg",
     tags: ["室內", "舒緩"],
   },
   indoor_medium: {
     title: "室內中強度型",
     description: "你適合在室內進行中等強度的運動，如健身房重訓、有氧等。",
-    image: "/images/quiz/strength-training.JPG",
+    image: "/images/quiz/strength-training.jpg",
     tags: ["室內", "中強度"],
   },
   indoor_high: {
     title: "室內高強度型",
     description: "你適合在室內進行高強度運動，如HIIT、拳擊等。",
-    image: "/images/quiz/group-fitness.JPG",
+    image: "/images/quiz/group-fitness.jpg",
     tags: ["室內", "高強度"],
   },
   indoor_mixed: {
     title: "室內混合型",
     description: "你適合在室內嘗試多種強度的運動，享受多元運動樂趣。",
-    image: "/images/quiz/group-fitness.JPG",
+    image: "/images/quiz/group-fitness.jpg",
     tags: ["室內", "混合"],
   },
   group_light: {
     title: "團體舒緩型",
     description: "你適合參加團體舒緩運動，如團體瑜伽、舞蹈等。",
-    image: "/images/quiz/group-dance.JPG",
+    image: "/images/quiz/group-dance.jpg",
     tags: ["團體", "舒緩"],
   },
   group_medium: {
     title: "團體中強度型",
     description: "你適合參加團體中強度運動，如團體有氧、球類等。",
-    image: "/images/quiz/team-sports.JPG",
+    image: "/images/quiz/team-sports.jpg",
     tags: ["團體", "中強度"],
   },
   group_high: {
     title: "團體高強度型",
     description: "你適合參加團體高強度運動，如團體HIIT、競技球類等。",
-    image: "/images/quiz/team-sports.JPG",
+    image: "/images/quiz/team-sports.jpg",
     tags: ["團體", "高強度"],
   },
   group_mixed: {
     title: "團體混合型",
     description: "你適合參加團體混合強度運動，享受多元團體運動樂趣。",
-    image: "/images/quiz/team-sports.JPG",
+    image: "/images/quiz/team-sports.jpg",
     tags: ["團體", "混合"],
   },
   home_light: {
     title: "居家舒緩型",
     description: "你適合在家進行舒緩運動，如居家瑜伽、伸展等。",
-    image: "/images/quiz/home-fitness.JPG",
+    image: "/images/quiz/home-fitness.jpg",
     tags: ["居家", "舒緩"],
   },
   home_medium: {
     title: "居家中強度型",
     description: "你適合在家進行中強度運動，如居家有氧、核心訓練等。",
-    image: "/images/quiz/home-hiit.JPG",
+    image: "/images/quiz/home-hiit.jpg",
     tags: ["居家", "中強度"],
   },
   home_high: {
     title: "居家高強度型",
     description: "你適合在家進行高強度運動，如居家HIIT、重訓等。",
-    image: "/images/quiz/home-hiit.JPG",
+    image: "/images/quiz/home-hiit.jpg",
     tags: ["居家", "高強度"],
   },
   home_mixed: {
     title: "居家混合型",
     description: "你適合在家嘗試多種強度的運動，享受多元運動樂趣。",
-    image: "/images/quiz/home-hiit.JPG",
+    image: "/images/quiz/home-hiit.jpg",
     tags: ["居家", "混合"],
   },
   // 大方向 fallback
@@ -384,28 +384,28 @@ const SPORT_RECOMMENDATIONS = {
     title: "戶外運動愛好者",
     description:
       "你熱愛大自然，適合各種戶外運動，建議多參與戶外活動，享受陽光與新鮮空氣。",
-    image: "/images/quiz/yoga-outdoor.JPG",
+    image: "/images/quiz/yoga-outdoor.jpg",
     tags: ["戶外", "自然", "陽光"],
   },
   indoor: {
     title: "室內運動愛好者",
     description:
       "你偏好在舒適的環境中運動，建議參加健身房、室內團體課程或個人訓練。",
-    image: "/images/quiz/group-fitness.JPG",
+    image: "/images/quiz/group-fitness.jpg",
     tags: ["室內", "舒適", "健身房"],
   },
   group: {
     title: "團體運動愛好者",
     description:
       "你喜歡與人互動，適合參加團體運動如球類、舞蹈等，享受團隊合作的樂趣。",
-    image: "/images/quiz/team-sports.JPG",
+    image: "/images/quiz/team-sports.jpg",
     tags: ["團體", "互動", "合作"],
   },
   home: {
     title: "居家運動愛好者",
     description:
       "你喜歡在家運動，建議多做徒手訓練、瑜伽或線上課程，方便又自在。",
-    image: "/images/quiz/home-fitness.JPG",
+    image: "/images/quiz/home-fitness.jpg",
     tags: ["居家", "便利", "自在"],
   },
 };
@@ -711,7 +711,7 @@ export default function Home() {
           title: "全能運動者",
           description:
             "你適合多種運動類型，建議嘗試不同的運動來找到最適合你的方式。",
-          image: "/images/quiz/all-around.JPG",
+          image: "/images/quiz/all-around.jpg",
           tags: ["全能", "探索", "多元", "適應"],
         }
       );
