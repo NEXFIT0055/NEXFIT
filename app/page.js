@@ -444,7 +444,7 @@ function ExploreCoursesSection() {
       title: "客製化訓練",
       desc: "依身體節奏打造專屬訓練方式，從呼吸、動作到步調，每一步都為你量身設計，讓運動真正貼近你的生活。",
       link: "/reservation/course",
-      textGridArea: "1 / 1 / 3 / 5",
+      textGridArea: "1 / 2 / 3 / 5",
       imageGridArea: "2 / 5 / 4 / 8",
     },
     {
@@ -452,24 +452,24 @@ function ExploreCoursesSection() {
       title: "營養補給",
       desc: "用適合自己的方式補營養，吃得開心才能走得更遠。不節食、不勉強，讓身體與心情都得到支持與滋養。",
       link: "/shop/products",
-      textGridArea: "4 / 8 / 6 / 12",
-      imageGridArea: "5 / 4 / 7 / 8",
+      textGridArea: "4 / 9 / 6 / 12",
+      imageGridArea: "5 / 6 / 7 / 9",
     },
     {
       image: "/images/ExploreCourses03.jpg",
       title: "持續練習",
       desc: "一步一腳印地練習與成長，不求快速蛻變，而是專注在每一次的累積中建立長久習慣，打造可持續的健康生活。",
       link: "/reservation/course",
-      textGridArea: "7 / 1 / 9 / 5",
-      imageGridArea: "8 / 5 / 10 / 9",
+      textGridArea: "7 / 2 / 9 / 5",
+      imageGridArea: "8 / 5 / 10 / 8",
     },
     {
       image: "/images/ExploreCourses04.jpg",
       title: "與內在連結",
       desc: "健身不只是流汗與燃燒，更是一場探索自我、與內在對話的旅程。相信自己，活出獨一無二的節奏與生活。",
       link: "/forum",
-      textGridArea: "10 / 8 / 12 / 12",
-      imageGridArea: "11 / 4 / 13 / 8",
+      textGridArea: "10 / 9 / 12 / 12",
+      imageGridArea: "11 / 6 / 13 / 9",
     },
   ];
   return (
@@ -480,7 +480,7 @@ function ExploreCoursesSection() {
       viewport={{ once: false, amount: 0.2 }}
       className="relative bg-[#E7E7E5] overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 ">
         {/*  Grid  */}
         <div className="grid grid-cols-12 grid-rows-12 gap-4 ">
           {/* 文字區塊 */}
