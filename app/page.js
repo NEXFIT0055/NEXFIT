@@ -1300,9 +1300,10 @@ export default function Home() {
                     });
                   })()}
                   {/* 圖片本身 */}
-                  <img
+                  <Image
                     src={result.image}
                     alt={result.title}
+                    fill
                     className="w-full h-full object-contain bg-gray-100 z-0"
                   />
                 </div>
